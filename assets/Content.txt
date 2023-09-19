@@ -1,0 +1,86 @@
+[
+  {
+    "city": "Aprylhaven",
+    "state": "Colorado",
+    "street": "Pfannerstill Brook",
+    "street_address": "494 Koch Extension",
+    "country": "Saudi Arabia"
+  },
+  {
+    "city": "Carmelview",
+    "state": "West Virginia",
+    "street": "Karan Knoll",
+    "street_address": "584 Eun Ford",
+    "country": "Bolivia"
+  },
+  {
+    "city": "North Ricky",
+    "state": "Oregon",
+    "street": "Spinka Vista",
+    "street_address": "2954 Runte Ways",
+    "country": "Saint Helena"
+  },
+  {
+    "city": "Lavonneburgh",
+    "state": "Nebraska",
+    "street": "Pauletta Harbors",
+    "street_address": "243 Herman Garden",
+    "country": "Bulgaria"
+  },
+  {
+    "city": "Harriettemouth",
+    "state": "Michigan",
+    "street": "Boehm Expressway",
+    "street_address": "77071 Gerard Mount",
+    "country": "Central African Republic"
+  },
+  {
+    "city": "Haneberg",
+    "state": "Texas",
+    "street": "Rhea Stream",
+    "street_address": "9555 Kyra Islands",
+    "country": "United States Minor Outlying Islands"
+  },
+  {
+    "city": "North Alethea",
+    "state": "Vermont",
+    "street": "Brown Branch",
+    "street_address": "8996 Brant Ways",
+    "country": "Burundi"
+  },
+  {
+    "city": "Jacobsonton",
+    "state": "Iowa",
+    "street": "Vita Crossing",
+    "street_address": "65818 Albertha Port",
+    "country": "Burundi"
+  },
+  {
+    "city": "South Branden",
+    "state": "Illinois",
+    "street": "Moen Island",
+    "street_address": "37444 Kymberly Trace",
+    "country": "Guyana"
+  },
+  {
+    "city": "South Jamesstad",
+    "state": "Ohio",
+    "street": "Young Wall",
+    "street_address": "189 Chase Shore",
+    "country": "Hong Kong"
+  },
+  {
+    "city": "Leport",
+    "state": "New York",
+    "street": "Dibbert Orchard",
+    "street_address": "146 Will Rapid",
+    "country": "Venezuela"
+  },
+  {
+    "city": "Lake Rosendo",
+    "state": "Rhode Island",
+    "street": "Casper Bypass",
+    "street_address": "193 Schultz Harbor",
+    "country": "Tanzania"
+  }
+]

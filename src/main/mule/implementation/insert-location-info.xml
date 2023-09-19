@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:s3="http://www.mulesoft.org/schema/mule/s3" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd">
+	<flow name="pf-insert-location-info-flow" doc:id="14e4774a-e593-4775-997d-66b213bda318" >
+		<logger level="INFO" doc:name="Storing the location info in Database" doc:id="c9620dc7-6aaf-4b03-b579-f562de4f3bff" message='#["\nInserting the response received in payload to the database.\n"]'/>
+		<ee:transform doc:name="Preprocessing the payload" doc:id="36241a14-a46e-4de4-b088-4e9c39a8cc96" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+flatten(flatten(payload..*addresses))]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<try doc:name="Try" doc:id="393e58aa-f855-456b-8a32-1a6e5db3a9c3" >
+			<foreach doc:name="For Each" doc:id="ebfd3dfa-039a-4fb5-a872-fd44992f0e3f" collection="#[payload]">
+				<s3:put-object doc:name="Put Object" doc:id="c6c1b83e-1d19-4373-a862-5efe2f0a5758" config-ref="Amazon_S3_Configuration" bucketName="${aws.bucket}" key='#[payload.city++".txt"]'/>
+		</foreach>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7b9468db-527d-4f37-af63-8230703d8f0e" >
+					<ee:transform doc:name="Setting error message" doc:id="b6ec272d-7087-4781-88da-80fb8f07dd90" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+"Failed to add record to the database."]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<flow-ref doc:name="Transfering the payload" doc:id="c7e6f1bf-452d-48f9-9d7d-05e09055b719" name="pf-get-weather-info-flow"/>
+	</flow>
+</mule>

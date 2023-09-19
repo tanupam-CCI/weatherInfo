@@ -1,0 +1,12 @@
+%dw 2.0
+
+type auto_e8336783_aa03_401a_8552_1e2255056e06_Output_Payload = {
+  min_temp: Number, 
+  name: String, 
+  description: String, 
+  humidity: Number, 
+  pressure: Number, 
+  max_temp: Number, 
+  _?: Any
+}
+

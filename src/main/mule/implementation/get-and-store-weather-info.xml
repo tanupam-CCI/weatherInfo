@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="pf-get-weather-info-flow" doc:id="e8336783-aa03-401a-8552-1e2255056e06" >
+		<logger level="INFO" doc:name="Location and Weather info" doc:id="f94cb98d-7f84-490e-8d07-c56e19158532" message='#["Location Info Payload being passed to Weather Info API"]'/>
+		<ee:transform doc:name="Fetching location from the Payload" doc:id="eb94e14d-ed9c-475e-81f5-96803bbdb4f1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload.*state]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<try doc:name="Try" doc:id="5bacd92c-b0c5-4f18-895d-b8af5818dbb8" >
+			<foreach doc:name="For Each" doc:id="4d159f61-446c-4ed3-9727-841d3a176d5c">
+			<http:request method="GET" doc:name="Retrieving Weather Info" doc:id="be00855c-7ac4-4ed3-8536-890740c8b8c1" url="https://api.openweathermap.org/data/2.5/weather/" config-ref="HTTP_Request_configuration">
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	q : payload,
+	appid : Mule::p('secure::api.key')
+}]]]></http:query-params>
+		</http:request>
+				<validation:is-not-null doc:name="Payload is not null" doc:id="5ecb31bd-0345-461f-bd5e-7233cf4fbfc1" value="#[payload]" message='#["Payload received is null."]' config-ref="Validation_Config"/>
+				<ee:transform doc:name="Transform Message" doc:id="4be308f8-ec07-4873-9410-32fc1d95a6e8">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[
+	{
+		Name: payload.name,
+		description__c:payload.weather.description joinBy "",
+		min_temp__c:payload.main.temp_min,
+		max_temp__c:payload.main.temp_max,
+		pressure__c:payload.main.pressure,
+		humidity__c:payload.main.humidity
+	}
+]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<salesforce:create doc:name="Create" doc:id="f40483fa-0056-4af9-87d0-c365435fc89e" config-ref="Salesforce_Config" type="weather_info__c"/>
+				<logger level="INFO" doc:name="Response" doc:id="e5a61a97-8f76-4d17-aaa7-63b6369278f2" message="#[payload]"/>
+		</foreach>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c2d04f4e-a56e-42e3-b618-f73198fa92a4" type="ANY">
+					<logger level="INFO" doc:name="Setting error message" doc:id="f9d7cc2b-cbba-4f2e-a82c-f9ffc13d8ac9" message='#["Failed to fetch and insert into database."]'/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Setting success message" doc:id="a1f2bc4e-e58b-4221-a603-5a378633d781" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+"Weather Info has been successfully added to the database. Thank you!"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

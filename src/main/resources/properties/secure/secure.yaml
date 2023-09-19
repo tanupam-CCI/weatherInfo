@@ -1,0 +1,13 @@
+api:
+  key: "![Vx0ciSSqUD9kOzLZELFEZUVRPBirKGCwEBj8yFr+eitJS0fQmihmOA==]"
+  instanceId: "![7TBtYfllC2nCDsr15g/r6g==]"
+salesforce:
+  password: "![/5z2Noa2cm0MyX6MeUBwtQ==]"
+  token: "![s1sawtBxw+/tiG9aIZ3eRfkJCVKsiNzFF+fAbdApFKw=]"
+  
+aws:
+  userId: "![hqdijv9C8HnqcbsJOsO2+w==]"
+  accessKey: "![F1UC3gwJk0yf7Ir15P4xOy+mIg1UqK7R]"
+  secretAccessKey: "![hit6DeKv1vRAiJKZoV+kkrVn/g4yg3i7cuzJjGivj7OZO8vZkkaaBE2wK/NOPIXN]"
+  
+  

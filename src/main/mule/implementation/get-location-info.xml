@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="pf-get-location-info-flow" doc:id="85b5f709-62ff-42e2-b883-1e645dda0850" >
+		<logger level="INFO" doc:name="Retrieve Location Info Flow" doc:id="98824766-68c9-4042-8d01-f5af53d30ea5" message='#["\n\nInitiating fetching location by using Random Data API.\n"]'/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="19b9a7bf-5636-45a6-8a44-528cef0e5541" >
+			<route>
+				<try doc:name="Try" doc:id="1944cd97-1ab3-4269-bf1d-260660018eb6" >
+					<http:request method="GET" doc:name="Retrieving Location Info" doc:id="ddb008c7-582a-4b8e-a7eb-a45597cbe625" url="https://random-data-api.com/api/v2/addresses?size=4" config-ref="HTTP_Request_configuration"/>
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="fdc9bba7-29e6-4a32-9e0c-83dce427b994" >
+							<logger level="INFO" doc:name="Setting error message" doc:id="3b36f99b-0b62-4ef8-8569-d79df2990bd8" message='#["Failed to fetch response"]'/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+			<route>
+				<try doc:name="Try" doc:id="64694f4d-2898-48c8-b790-d589293011bb" >
+					<http:request method="GET" doc:name="Retrieving Location Info" doc:id="6466bdf8-6c3c-4188-9c2b-50b540c7a9f6" url="https://random-data-api.com/api/v2/addresses?size=4" config-ref="HTTP_Request_configuration"/>
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="11e676b9-a688-4f4d-ad3e-f9893c7f59ac" >
+							<logger level="INFO" doc:name="Setting error message" doc:id="5a5f87c5-c36b-4867-921c-325d3c2d4590" message='#["Failed to fetch response"]'/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+			<route>
+				<try doc:name="Try" doc:id="88a233fd-adab-478a-8461-498e0af8bcd2" >
+					<http:request method="GET" doc:name="Retrieving Location Info" doc:id="b1f1b496-b87e-4aa4-b7d3-eaf929809ee5" url="https://random-data-api.com/api/v2/addresses?size=4" config-ref="HTTP_Request_configuration"/>
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="023a3326-3c8f-486b-ac2e-096c57c595be" >
+							<logger level="INFO" doc:name="Setting error message" doc:id="25e2aaeb-3a95-4a87-852c-7c80657bf118" message='#["Failed to fetch response"]'/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+		</scatter-gather>
+		<logger level="INFO" doc:name="Response received" doc:id="367d07f2-e9fe-4599-b3cd-87d1361a1f31" message='#["Response received."]'/>
+		<ee:transform doc:name="Extracting address details" doc:id="1898523d-8f12-4a81-a2e1-bf2b9f7d7029">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java 
+
+fun extractAddressData(payload: Array) = payload map (item) -> {
+    city: item.city,
+    state: item.state,
+    street: item.street_name,
+    street_address: item.street_address,
+    country: item.country,
+}
+
+---
+payload mapObject (item, index) -> {
+    (index): {
+        addresses: extractAddressData(item.payload)
+    }
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<flow-ref doc:name="Inserting payload to database" doc:id="1bbc9275-4574-4212-9c34-edf808b3ffbd" name="pf-insert-location-info-flow"/>
+	</flow>
+</mule>

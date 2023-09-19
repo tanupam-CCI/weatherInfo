@@ -1,0 +1,16 @@
+sql:
+  user: "root"
+  host: "localhost"
+  port: "3306"
+  password: "261101"
+
+query:
+  insertLocationInfo: "INSERT INTO `WEATHER_INFO_PAPI`.`LOCATION_INFO`(`CITY`,`STREET`,`STATE`,`STREET_ADDRESS`,`COUNTRY`) VALUES (:CITY, :STREET, :STATE, :STREET_ADDRESS, :COUNTRY);"
+  insertWeatherInfo: "INSERT INTO `WEATHER_INFO_PAPI`.`WEATHER_INFO` (`PLACE`,`DESCRIPTION`, `MIN_TEMP`, `MAX_TEMP`, `HUMIDITY`, `PRESSURE`) VALUES (:PLACE, :DESCRIPTION, :MIN_TEMP, :MAX_TEMP, :HUMIDITY, :PRESSURE);"
+  
+salesforce:
+  username: "tanupam.saha@caeliusconsulting.com"
+  url: "https://login.salesforce.com/services/Soap/u/58.0"
+  
+aws:
+  bucket: "mulesoftdeployment"
