@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.4.0-20230522</app.runtime>
+		<app.runtime>4.4.0</app.runtime>
 		<mule.maven.plugin.version>3.8.2</mule.maven.plugin.version>
 	</properties>
 
@@ -36,7 +36,19 @@
 							<artifactId>mysql-connector-java</artifactId>
 						</sharedLibrary>
 					</sharedLibraries>
-					<classifier>---- select project type ----</classifier>
+					<cloudHubDeployment>
+						<uri>https://anypoint.mulesoft.com</uri>
+						<muleVersion>${mule.version}</muleVersion>
+						<username>${anypoint.username}</username>
+						<password>${anypoint.password}</password>
+						<environment>${env}</environment>
+						<applicationName>${appName}</applicationName>
+						<businessGroup>${business}</businessGroup>
+						<workerType>${vCore}</workerType>
+						<workers>${workers}</workers>
+					<objectStoreV2>true</objectStoreV2>
+					</cloudHubDeployment>
+					<classifier>mule-application</classifier>
 				</configuration>
 			</plugin>
 		</plugins>
